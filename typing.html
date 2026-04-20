@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>웹 한컴타자연습</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+        }
+        #sentence {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            min-height: 2.2rem;
+            font-weight: bold;
+        }
+        input {
+            width: 90%;
+            padding: 12px;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #007bff;
+        }
+        .stats {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-around;
+            color: #666;
+        }
+        .stat-box {
+            font-size: 0.9rem;
+        }
+        .stat-val {
+            display: block;
+            font-size: 1.2rem;
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>⌨️ 온라인 타자연습</h2>
+    <div id="sentence">로딩 중...</div>
+    <input type="text" id="input-field" placeholder="위 문장을 따라 입력하세요" autofocus>
+    
+    <div class="stats">
+        <div class="stat-box">타수<span id="wpm" class="stat-val">0</span></div>
+        <div class="stat-box">정확도<span id="accuracy" class="stat-val">0%</span></div>
+        <div class="stat-box">진행도<span id="progress" class="stat-val">0/0</span></div>
+    </div>
+</div>
+
+<script>
+    const sentences = [
+        "별 헤는 밤 아래 우리는 꿈을 꿉니다.",
+        "간장 공장 공장장은 강 공장장이다.",
+        "컴퓨터 프로그래밍은 현대의 마법과 같습니다.",
+        "나랏말싸미 듕귁에 달아 문자와로 서르 사맛디 아니할쎄.",
+        "오늘 점심은 무엇을 먹을지 고민이 되는군요.",
+        "천 리 길도 한 걸음부터 시작합니다.",
+        "자바스크립트로 만드는 타자연습 게임입니다."
+    ];
+
+    let currentIdx = 0;
+    let startTime;
+    let totalTyped = 0;
+    let totalErrors = 0;
+
+    const sentenceEl = document.getElementById('sentence');
+    const inputEl = document.getElementById('input-field');
+    const wpmEl = document.getElementById('wpm');
+    const accEl = document.getElementById('accuracy');
+    const progEl = document.getElementById('progress');
+
+    function init() {
+        sentenceEl.innerText = sentences[currentIdx];
+        progEl.innerText = `1/${sentences.length}`;
+    }
+
+    inputEl.addEventListener('input', (e) => {
+        if (!startTime) startTime = new Date();
+        
+        const currentSentence = sentences[currentIdx];
+        const typedValue = e.target.value;
+
+        // 실시간 정확도 및 타수 계산 (단순화된 공식)
+        const timeElapsed = (new Date() - startTime) / 60000; // 분 단위
+        const currentWpm = Math.floor((typedValue.length + totalTyped) / (timeElapsed || 1) * 2); // 한글 특성 보정
+        
+        wpmEl.innerText = currentWpm;
+
+        // 엔터 키를 누르면 다음 문장으로
+        if (e.inputType === 'insertLineBreak' || e.data === null && e.inputType === 'insertText') return;
+    });
+
+    inputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const currentSentence = sentences[currentIdx];
+            const typedValue = inputEl.value;
+
+            // 정확도 계산
+            let errors = 0;
+            for(let i=0; i < currentSentence.length; i++) {
+                if(typedValue[i] !== currentSentence[i]) errors++;
+            }
+            totalErrors += errors;
+            totalTyped += currentSentence.length;
+
+            currentIdx++;
+            if (currentIdx < sentences.length) {
+                inputEl.value = '';
+                sentenceEl.innerText = sentences[currentIdx];
+                progEl.innerText = `${currentIdx + 1}/${sentences.length}`;
+                accEl.innerText = Math.floor(((totalTyped - totalErrors) / totalTyped) * 100) + '%';
+            } else {
+                sentenceEl.innerText = "🎉 모든 연습이 끝났습니다!";
+                inputEl.disabled = true;
+            }
+        }
+    });
+
+    init();
+</script>
+
+</body>
+</html>
