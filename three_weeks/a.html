@@ -1,20 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>테스팅</title>
+    <title>도서 신청</title>
+
     <style>
-        
+        body {
+            background-color: #f5f5f5;
+        }
+
+        h2 {
+            color: darkblue;
+            font-size: 30px;
+        }
+
+        #formBox {
+            border: 2px solid #555;
+            padding: 20px;
+            width: 300px;
+        }
+
+        .guide {
+            color: gray;
+            margin: 15px;
+        }
     </style>
 </head>
 <body>
-    <ul>
-        <h3>요리 관련 자격증</h3>
-        <li>커피 바리스타 자격증</li>
-        <li>제과제빵 자격증</li>
-        <li>조리기능사 자격증</li>
-    </ul>
+
+    <h2>도서 신청</h2>
+
+    <p class="guide">원하시는 도서를 아래 양식에 맞게 신청해 주세요.</p>
+
+    <img src="book.jpg" width="150" alt="도서 이미지">
+
+    <div id="formBox">
+        <form>
+            이름: <input type="text" name="name"><br><br>
+
+            비밀번호: <input type="password" name="pw"><br><br>
+
+            도서 종류:
+            <input type="radio" name="book" value="novel"> 소설
+            <input type="radio" name="book" value="nonfiction"> 비소설
+            <br><br>
+
+            <input type="submit" value="신청하기">
+        </form>
+    </div>
+
+    <br>
+
+    <a href="https://www.nl.go.kr">도서관 홈페이지</a>
 
 </body>
 </html>
